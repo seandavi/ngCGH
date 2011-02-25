@@ -1,27 +1,22 @@
 #!/usr/bin/env python
 import optparse
 import logging
-import sys
+import sys,math
 
 import pysam
-import ngs.regions
+import ngcgh
 
 class Counter:
     mCounts = 0
     def __call__(self, alignment):
         self.mCounts += 1
 
-class RegionalCount(ngs.regions.Region):
-    def __init__(self,chromosome,rbeg,rend,count):
-        ngs.regions.Region.__init__(self,chromosome,rbeg,rend)
-        self._count=count
-
-    def __str__(self):
-        return("%s:%d-%d <%d>" % (self.chromosome,self.rbeg,self.rend,self._count))
 
 def doNormalComparisonCGH(opts,args):
+    results=[]
     tfile = pysam.Samfile(args[0],'rb')
     nfile = pysam.Samfile(opts.normalbam,'rb')
+    winsize = opts.windowsize
     lengths=nfile.lengths
     refnames=nfile.references
     outfile=sys.stdout
@@ -36,24 +31,27 @@ def doNormalComparisonCGH(opts,args):
             if(n==0):
                 startloc = nread.pos
             n+=1
-            if(n==1000):
+            if(n==winsize):
                 j=0
                 while((tread.pos<nread.pos) & (tread.rname==nread.rname)):
                     tread=tfileiterator.next()
                     if(tread.is_duplicate): continue
                     j+=1
-                outfile.write("%s\t%d\t%d\t%d\t%d\n" % (refnames[refidx],
-                                              startloc,
-                                              nread.pos,
-                                              1000,
-                                              j))
+                if(j!=0):
+                    results.append([refnames[refidx],startloc,nread.pos,winsize,j,math.log(float(j)/winsize,2)])
                 n=0
+    # median-center data
+    med = median([row[5] for row in results])
+    for row in results:
+        row[5]=row[5]-med
+        # and write the file....
+        outfile.write("%s\t%d\t%d\t%d\t%d\t%f\n" % tuple(row))
 
 def median(vect):
     vect.sort()
     x = len(vect)
     if(x%2):
-        return((vect[x/2]+vect[(x/2)+1])/2)
+        return((vect[x/2]+vect[(x/2)+1])/2.0)
     else:
         return(vect[x/2])
             
@@ -62,8 +60,8 @@ def main():
     logging.basicConfig(level=10)
     logger = logging.getLogger('CGH')
     parser = optparse.OptionParser(usage="usage: %prog [options] bamfileName")
-    parser.add_option('-w','--windowsize',dest='windowsize',type="int",
-                      help='Windowsize (bp) for calculation of copy number')
+    parser.add_option('-w','--windowsize',dest='windowsize',type="int",default=1000,
+                      help='The number of reads captured from the normal sample for calculation of copy number')
     parser.add_option('-n','--normalbam',dest='normalbam',
                       help='The name of the bamfile for the normal comparison')
     parser.add_option('-o','--outfile',dest='outfile',type="string",

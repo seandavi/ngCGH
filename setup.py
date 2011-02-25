@@ -5,21 +5,22 @@ version = '0.1'
 
 setup(name='ngCGH',
       version=version,
-      description="Pseudo-cgh of-generation sequencing data",
-      long_description="""\
+      description="Pseudo-cgh of next-generation sequencing data",
+      long_description="""Pseudo-cgh of next-generation sequencing data
 """,
-      classifiers=[], # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
+      classifiers=["Topic :: Scientific/Engineering :: Bio-Informatics"], # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
       keywords='',
-      author='Sean DAvis',
+      author='Sean Davis',
       author_email='sdavis2@mail.nih.gov',
-      url='',
+      url='http://github.com/seandavi/ngCGH',
       license='GPL-2',
       packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
       include_package_data=True,
       zip_safe=False,
       install_requires=[
-          # -*- Extra requirements: -*-
+          'pysam>=0.3.0'
       ],
+      scripts = ['scripts/ngCGH'],
       entry_points="""
       # -*- Entry points: -*-
       """,
