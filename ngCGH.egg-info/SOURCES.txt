@@ -1,0 +1,9 @@
+setup.cfg
+setup.py
+ngCGH.egg-info/PKG-INFO
+ngCGH.egg-info/SOURCES.txt
+ngCGH.egg-info/dependency_links.txt
+ngCGH.egg-info/entry_points.txt
+ngCGH.egg-info/not-zip-safe
+ngCGH.egg-info/top_level.txt
+ngcgh/__init__.py
