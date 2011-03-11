@@ -25,3 +25,18 @@ Usage is very basic:
                         Logging Level, 1-15 with 1 being minimal logging and
                         15 being everything [10]
 
+
+Output
+======
+The output format is also very simple:
+
+::
+
+  chr1    4851    52735   1000    854     -0.025120
+  chr1    52736   59251   1000    812     -0.097876
+  chr1    59251   119119  1000    876     0.011575
+  chr1    119120  707038  1000    1087    0.322924
+  chr1    707040  711128  1000    1016    0.225472
+  chr1    711128  711375  1000    1059    0.285275
+  chr1    711375  735366  1000    919     0.080709
+  chr1    735368  798455  1000    972     0.161600
