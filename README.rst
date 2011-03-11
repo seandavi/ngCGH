@@ -4,7 +4,7 @@ Next-generation sequencing of tumor/normal pairs provides a good opportunity to 
 
 Usage is very basic:
 
-.. code-block: bash
+.. code-block:: bash
 
 $ ngCGH -h
 usage: ngCGH [-h] [-w WINDOWSIZE] [-o OUTFILE] [-l LOGLEVEL]
