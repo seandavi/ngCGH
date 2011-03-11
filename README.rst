@@ -2,7 +2,9 @@ Overview
 ============
 Next-generation sequencing of tumor/normal pairs provides a good opportunity to examine large-scale copy number variation in the tumor relative to the normal sample.  In practice, this concept seems to extend even to exome-capture sequencing of pairs of tumor and normal.  This library consists of a single script, ngCGH, that computes a pseudo-CGH using simple coverage counting on the tumor relative to the normal.
 
-Usage is very basic::
+Usage is very basic:
+
+::
 
   $ ngCGH -h
   usage: ngCGH [-h] [-w WINDOWSIZE] [-o OUTFILE] [-l LOGLEVEL]
