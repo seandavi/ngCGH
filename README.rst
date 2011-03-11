@@ -28,14 +28,9 @@ From PyPi
 Coming soon....
 
 
-github download
-------------------
-Go 
-
-
 Usage
 =====
-Usage is very basic:
+Usage is very simple:
 
 ::
 
