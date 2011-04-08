@@ -25,7 +25,13 @@ In either case, change into the resulting directory and::
 
 From PyPi
 -------------------
-Coming soon....
+If you have easy_install in place, this should suffice for installation:
+
+::
+
+  easy_install ngCGH
+
+
 
 
 Usage
