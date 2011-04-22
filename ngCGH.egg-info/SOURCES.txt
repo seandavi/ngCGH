@@ -8,4 +8,5 @@ ngCGH.egg-info/not-zip-safe
 ngCGH.egg-info/requires.txt
 ngCGH.egg-info/top_level.txt
 ngcgh/__init__.py
+scripts/convert2nexus
 scripts/ngCGH

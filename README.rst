@@ -77,3 +77,17 @@ The output format is also very simple:
 
 Columns 1-3 describe the chromosome, start, and end for each pseudo-probe.  The fourth column is the number of reads in the normal sample in the window while the fifth column represents the reads *in the same genomic window* from the tumor.  The last column contains the median-centered log2 ratio between tumor and normal.
 
+
+Converting to other formats
+---------------------------
+Included in the release is a script, convert2nexus, that takes as input the filename of a file created by ngCGH and converts it into a file that the Nexus CGH software from BioDiscovery can load for further analysis.  The format looks like this:
+
+::
+
+  Name    Chromosome      Start   End     PALZGU.cgh
+  chr1_10004      chr1    10004   15735   -2.087921
+  chr1_15736      chr1    15736   69385   -2.670936
+  chr1_69386      chr1    69386   521687  -0.428244
+  chr1_523537     chr1    523537  726959  0.080269
+  chr1_726959     chr1    726959  808542  0.223047
+  chr1_808546     chr1    808546  809138  -1.186761

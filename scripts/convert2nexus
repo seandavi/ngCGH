@@ -1,0 +1,16 @@
+#!/usr/bin/env python
+import os
+import csv
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('cghfile',
+                    help="filename for conversion from ngCGH format to nexus format")
+
+args = parser.parse_args()
+with open(args.cghfile,'r') as cghfile:
+    reader = csv.reader(cghfile,delimiter="\t")
+    print("\t".join(['Name',"Chromosome","Start","End",os.path.basename(args.cghfile)]))
+    for row in reader:
+        print ("\t".join([row[0]+"_"+row[1],
+                          row[0],row[1],row[2],row[5]]))
