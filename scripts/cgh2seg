@@ -10,7 +10,7 @@
 cgh2seg <- function(fname) {
   message(fname)
   dat = read.delim(fname,header=FALSE)
-  dat = dat[-grep('random',dat[,1]),]
+  dat = dat[grep('random',dat[,1],invert=TRUE),]
   require(DNAcopy)
   d1=CNA(genomdat=dat[,6],chrom=as.character(dat[,1]),maploc=floor(rowMeans(dat[,2:3])))
   d1=smooth.CNA(d1)
