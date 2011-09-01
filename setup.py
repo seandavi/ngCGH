@@ -51,7 +51,7 @@ Usage is very simple:
 ::
 
     $ ngCGH -h
-    usage: ngCGH [-h] [-w WINDOWSIZE] [-o OUTFILE] [-l LOGLEVEL]
+    usage: ngCGH [-h] [-w WINDOWSIZE] [-o OUTFILE] [-l LOGLEVEL] [-r REGIONS]
                normalbam tumorbam
 
     positional arguments:
@@ -68,6 +68,10 @@ Usage is very simple:
     -l LOGLEVEL, --loglevel LOGLEVEL
                         Logging Level, 1-15 with 1 being minimal logging and
                         15 being everything [10]
+    -r REGIONS, --regions REGIONS
+                        regions to which analysis should be restricted, either
+                        a bed file name or a single region in format chrN:XXX-
+                        YYY
 
 
 Output

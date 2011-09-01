@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import argparse
 import logging
-import sys,math
+import sys,math,os
 
 import pysam
 import ngcgh
@@ -11,6 +11,22 @@ class Counter:
     def __call__(self, alignment):
         self.mCounts += 1
 
+def readRegions(regionsFileName):
+    regionsfile = open(regionsFileName,'r')
+    regions = {}
+    while 1:
+        line = regionsfile.readline()
+        if not line: break
+        wrds = line.split()
+        if not regions.has_key(wrds[0]): regions.update({wrds[0]:[]})
+        regions[wrds[0]].append((int(wrds[1]),int(wrds[2])))
+    regionsfile.close()
+    return regions
+
+def parseregion(rgnString):
+    [chrN,boundaries] = rgnString.split(":")
+    [startPos,stopPos] = [int(xx) for xx in boundaries.split('-')]
+    return {chrN:[(startPos,stopPos)]}
 
 def doNormalComparisonCGH(opts):
     results=[]
@@ -19,27 +35,35 @@ def doNormalComparisonCGH(opts):
     winsize = opts.windowsize
     lengths=nfile.lengths
     refnames=nfile.references
+    regions = {}
+    if (opts.regions is not None):
+        if os.path.exists(opts.regions): regions = readRegions(opts.regions)
+        else: regions = parseregion(opts.regions)
+    else:
+        regions = dict(zip(refnames,[[(0,xx)] for xx in lengths]))
+
     outfile=sys.stdout
     if(opts.outfile is not None):
         outfile=open(opts.outfile,'w')
-    for refidx in xrange(tfile.nreferences):
-        n=0
-        tfileiterator=tfile.fetch(refnames[refidx],0,lengths[refidx])
-        tread=tfileiterator.next()
-        for nread in nfile.fetch(refnames[refidx],0,lengths[refidx]):
-            if(nread.is_duplicate): continue
-            if(n==0):
-                startloc = nread.pos
-            n+=1
-            if(n==winsize):
-                j=0
-                while((tread.pos<nread.pos) & (tread.rname==nread.rname)):
-                    tread=tfileiterator.next()
-                    if(tread.is_duplicate): continue
-                    j+=1
-                if(j!=0):
-                    results.append([refnames[refidx],startloc,nread.pos,winsize,j,math.log(float(j)/winsize,2)])
-                n=0
+    for chrN in regions.iterkeys():
+        for (startPos, stopPos) in regions[chrN]:
+            n=0
+            tfileiterator=tfile.fetch(chrN,startPos,stopPos)
+            tread=tfileiterator.next()
+            for nread in nfile.fetch(chrN,startPos,stopPos):
+                if(nread.is_duplicate): continue
+                if(n==0):
+                    startloc = nread.pos
+                n+=1
+                if(n==winsize):
+                    j=0
+                    while((tread.pos<nread.pos) & (tread.rname==nread.rname)):
+                        tread=tfileiterator.next()
+                        if(tread.is_duplicate): continue
+                        j+=1
+                    if(j!=0):
+                        results.append([chrN,startloc,nread.pos,winsize,j,math.log(float(j)/winsize,2)])
+                    n=0
     # median-center data
     med = median([row[5] for row in results])
     for row in results:
@@ -70,6 +94,8 @@ def main():
                         help='The name of the bamfile for the normal comparison')
     parser.add_argument('tumorbam',
                         help='The name of the tumor sample bamfile')
+    parser.add_argument('-r','--regions',dest='regions',
+                        help='regions to which analysis should be restricted, either a bed file name or a single region in format chrN:XXX-YYY')
     opts = parser.parse_args()
     if(opts.loglevel is not None):
         logger.setLevel(opts.loglevel)
