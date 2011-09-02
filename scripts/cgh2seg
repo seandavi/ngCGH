@@ -17,7 +17,7 @@ cgh2seg <- function(fname) {
   d2=segment(d1,min.width=4,undo.splits="sdundo",verbose=2)
   x=rep(d2$output$seg.mean,times=d2$output$num.mark)
   y=density(x)
-  z=y$x[which(y$y==max(y$y))]
+  z=y$x[which.max(y$y)]
   d2$output$seg.mean=  d2$output$seg.mean-z
   message("Centrality parameter: ",z)
   sampname=gsub('\\.cgh\\.txt','',basename(fname))
