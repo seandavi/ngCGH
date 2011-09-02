@@ -2,6 +2,7 @@
 import argparse
 import logging
 import sys,math,os
+import collections
 
 import pysam
 import ngcgh
