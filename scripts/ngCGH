@@ -13,19 +13,16 @@ class Counter:
 
 def readRegions(regionsFileName):
     regionsfile = open(regionsFileName,'r')
-    regions = {}
-    while 1:
-        line = regionsfile.readline()
-        if not line: break
-        wrds = line.split()
-        if not regions.has_key(wrds[0]): regions.update({wrds[0]:[]})
+    regions=collections.defaultdict(list)
+    for line in regionsfile:
+        wrds = line.strip().split("\t")
         regions[wrds[0]].append((int(wrds[1]),int(wrds[2])))
     regionsfile.close()
     return regions
 
 def parseregion(rgnString):
-    [chrN,boundaries] = rgnString.split(":")
-    [startPos,stopPos] = [int(xx) for xx in boundaries.split('-')]
+    (chrN,boundaries) = rgnString.split(":")
+    (startPos,stopPos) = [int(xx) for xx in boundaries.split('-')]
     return {chrN:[(startPos,stopPos)]}
 
 def doNormalComparisonCGH(opts):
@@ -83,7 +80,8 @@ def median(vect):
 def main():
     logging.basicConfig(level=10)
     logger = logging.getLogger('CGH')
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+	    formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-w','--windowsize',dest='windowsize',type=int,default=1000,
                         help='The number of reads captured from the normal sample for calculation of copy number')
     parser.add_argument('-o','--outfile',dest='outfile',

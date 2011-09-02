@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import sys, os
 
-version = '0.1.5'
+version = '0.1.6'
 
 setup(name='ngCGH',
       version=version,
@@ -129,7 +129,7 @@ The pseudo-cgh algorithm employed by ngCGH takes as input two appropriately matc
 """,
       classifiers=["Topic :: Scientific/Engineering :: Bio-Informatics"], # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
       keywords='',
-      author='Sean Davis',
+      author='Sean Davis and Josh Waterfall',
       author_email='sdavis2@mail.nih.gov',
       url='http://github.com/seandavi/ngCGH',
       license='GPL-2',
