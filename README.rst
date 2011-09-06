@@ -19,8 +19,6 @@ If you are a git user, then simply cloning the repository will get you the lates
 
 Alternatively, click the `Download <https://github.com/seandavi/ngCGH/archives/master>`_ button and get the tarball or zip file.
 
-
-
 In either case, change into the resulting directory and::
 
   cd ngCGH
