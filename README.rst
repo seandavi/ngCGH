@@ -17,7 +17,9 @@ If you are a git user, then simply cloning the repository will get you the lates
 
   git clone git://github.com/seandavi/ngCGH.git
 
-Alternatively, click the ``Download`` button and get the tarball or zip file.
+Alternatively, click the `Download <https://github.com/seandavi/ngCGH/archives/master>`_ button and get the tarball or zip file.
+
+
 
 In either case, change into the resulting directory and::
 
