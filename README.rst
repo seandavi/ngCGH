@@ -82,11 +82,8 @@ The output format is also very simple:
 Columns 1-3 describe the chromosome, start, and end for each pseudo-probe.  The fourth column is the number of reads in the normal sample in the window while the fifth column represents the reads *in the same genomic window* from the tumor.  The last column contains the median-centered log2 ratio between tumor and normal.
 
 
-Converting to other formats
----------------------------
-
 Convert from ngCGH to Biodiscovery Nexus
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+----------------------------------------
 Included in the release is a script, convert2nexus, that takes as input the filename of a file created by ngCGH and converts it into a file that the Nexus CGH software from BioDiscovery can load for further analysis.  The format looks like this:
 
 ::
@@ -101,7 +98,7 @@ Included in the release is a script, convert2nexus, that takes as input the file
 
 
 Convert from Complete Genomics to Biodiscovery Nexus
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+----------------------------------------------------
 There is now plenty of Complete Genomics data floating around.  We are often interested in visualizing the somatic CNV data in Biodiscovery nexus.  There is a script, cgi2nexus that takes a file typically named as "SomaticCnvDetailsDiploidBeta*" and converts to the file format noted above.  Bzip2 (typical from CGI) are uncompressed on-the-fly.
 
 
