@@ -1,0 +1,30 @@
+#!/usr/bin/env python
+import argparse
+import subprocess
+import math
+
+parser = argparse.ArgumentParser("Convert Complete Genomics Somatic CNV files to use with Biodiscovery Nexus")
+
+parser.add_argument('-n','--name',help="name of sample to show in Nexus",default="SAMPLE")
+parser.add_argument("somaticCNVDetailsFile",
+                    help = "A file from CGI that is currently named with something like 'SomaticCnvDetailsDiploidBeta*'")
+
+opts = parser.parse_args()
+
+fh = None
+if(opts.somaticCNVDetailsFile.endswith('.bz2')):
+    fh = subprocess.Popen(['bunzip2 -c %s' % opts.somaticCNVDetailsFile],stdout=subprocess.PIPE,shell=True).stdout
+else:
+    fh = open(opts.somaticCNVDetailsFile)
+line = fh.next()
+while(not line.startswith(">chr")):
+    line = fh.next()
+
+print "Name\tChromosome\tStart\tEnd\t%s" % (opts.name)
+for line in fh:
+    row=line.strip().split()
+    try:
+        print "%s\t%s\t%s\t%s\t%f" %(row[0] + "_" + row[1],row[0],row[1],row[2],math.log(float(row[6]),2))
+    except ValueError:
+        pass
+
