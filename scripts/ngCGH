@@ -26,13 +26,18 @@ def parseregion(rgnString):
     (startPos,stopPos) = [int(xx) for xx in boundaries.split('-')]
     return {chrN:[(startPos,stopPos)]}
 
-def doNormalComparisonCGH(opts):
+def doNormalComparisonCGH(opts,logger):
     results=[]
+    logger.info('Starting run')
     tfile = pysam.Samfile(opts.tumorbam,'rb')
+    logger.info('tumor file: %s' % opts.tumorbam)
     nfile = pysam.Samfile(opts.normalbam,'rb')
+    logger.info('normal file: %s' % opts.normalbam)
     winsize = opts.windowsize
+    logger.info('windowsize: %d' % opts.windowsize)
     lengths=nfile.lengths
     refnames=nfile.references
+    logger.info('found %d chromosomes' % (len(lengths)))
     regions = {}
     if (opts.regions is not None):
         if os.path.exists(opts.regions): regions = readRegions(opts.regions)
@@ -44,10 +49,16 @@ def doNormalComparisonCGH(opts):
     if(opts.outfile is not None):
         outfile=open(opts.outfile,'w')
     for chrN in regions.iterkeys():
+        logger.info('Chromosome %s' % chrN)
         for (startPos, stopPos) in regions[chrN]:
+            logger.debug('  %s:%d-%d' % (chrN,startPos,stopPos))
             n=0
             tfileiterator=tfile.fetch(chrN,startPos,stopPos)
-            tread=tfileiterator.next()
+            try:
+                tread=tfileiterator.next()
+            except StopIteration:
+                # No reads in the tumor in this region
+                break
             for nread in nfile.fetch(chrN,startPos,stopPos):
                 if(nread.is_duplicate): continue
                 if(n==0):
@@ -64,6 +75,7 @@ def doNormalComparisonCGH(opts):
                     n=0
     # median-center data
     med = median([row[5] for row in results])
+    logger.info('Writing output')
     for row in results:
         row[5]=row[5]-med
         # and write the file....
@@ -79,27 +91,26 @@ def median(vect):
             
 
 def main():
-    logging.basicConfig(level=10)
-    logger = logging.getLogger('CGH')
     parser = argparse.ArgumentParser(
 	    formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-w','--windowsize',dest='windowsize',type=int,default=1000,
                         help='The number of reads captured from the normal sample for calculation of copy number')
     parser.add_argument('-o','--outfile',dest='outfile',
                         help='Output filename, default <stdout>')
-    parser.add_argument('-l','--loglevel',dest='loglevel',type=int,
-                        help='Logging Level, 1-15 with 1 being minimal logging and 15 being everything [10]')
+    parser.add_argument('-l','--loglevel',dest='loglevel',type=int,default=20,
+                        help='Logging Level, 0-30 with 30 being maximal logging and 0 being errors only [20]')
     parser.add_argument('normalbam',
                         help='The name of the bamfile for the normal comparison')
     parser.add_argument('tumorbam',
                         help='The name of the tumor sample bamfile')
     parser.add_argument('-r','--regions',dest='regions',
                         help='regions to which analysis should be restricted, either a bed file name or a single region in format chrN:XXX-YYY')
-    opts = parser.parse_args()
-    if(opts.loglevel is not None):
-        logger.setLevel(opts.loglevel)
+    opts = parser.parse_args() 
+    logging.basicConfig()
+    logger = logging.getLogger('ngCGH')
+    logger.setLevel(opts.loglevel)
     if(opts.normalbam is not None):
-        doNormalComparisonCGH(opts)
+        doNormalComparisonCGH(opts,logger)
         exit()
     
 main()
