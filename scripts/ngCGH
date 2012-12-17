@@ -67,7 +67,12 @@ def doNormalComparisonCGH(opts,logger):
                 if(n==winsize):
                     j=0
                     while((tread.pos<nread.pos) & (tread.rname==nread.rname)):
-                        tread=tfileiterator.next()
+                        try:
+                            tread=tfileiterator.next()
+                        # last tumor read is at position < nread.pos
+                        # in this situation, the StopIteration is hit.  
+                        except StopIteration:
+                            break
                         if(tread.is_duplicate): continue
                         j+=1
                     if(j!=0):
@@ -98,7 +103,7 @@ def main():
     parser.add_argument('-o','--outfile',dest='outfile',
                         help='Output filename, default <stdout>')
     parser.add_argument('-l','--loglevel',dest='loglevel',type=int,default=20,
-                        help='Logging Level, 0-30 with 30 being maximal logging and 0 being errors only [20]')
+                        help='Logging Level, 1-30 with 1 being maximal logging and 30 being errors only [20]')
     parser.add_argument('normalbam',
                         help='The name of the bamfile for the normal comparison')
     parser.add_argument('tumorbam',
