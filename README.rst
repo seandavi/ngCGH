@@ -96,6 +96,10 @@ Included in the release is a script, convert2nexus, that takes as input the file
   chr1_726959     chr1    726959  808542  0.223047
   chr1_808546     chr1    808546  809138  -1.186761
 
+.. note::
+
+   The file format generated above can be loaded into Biodiscovery Nexus using the "Multi1" data type.
+
 
 Convert from Complete Genomics to Biodiscovery Nexus
 ----------------------------------------------------
