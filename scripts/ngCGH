@@ -3,6 +3,8 @@ import argparse
 import logging
 import sys,math,os
 import collections
+import itertools
+import multiprocessing
 
 import pysam
 import ngcgh
@@ -26,6 +28,50 @@ def parseregion(rgnString):
     (startPos,stopPos) = [int(xx) for xx in boundaries.split('-')]
     return {chrN:[(startPos,stopPos)]}
 
+def calculateRegion(args):
+    opts = args[0]
+    region = args[1]
+    logger = multiprocessing.log_to_stderr(opts.loglevel)
+    results=[]
+    tfile = pysam.Samfile(opts.tumorbam,'rb')
+    nfile = pysam.Samfile(opts.normalbam,'rb')
+    winsize = opts.windowsize
+    lengths=nfile.lengths
+    refnames=nfile.references
+    chrN=region[0]
+    startPos=region[1]
+    stopPos=region[2]
+    logger.info('Working on %s:%d-%d' % (chrN,startPos,stopPos))
+    n=0
+    tfileiterator=tfile.fetch(chrN,startPos,stopPos)
+    try:
+        tread=tfileiterator.next()
+    except StopIteration:
+        # No reads in the tumor in this region
+        return([])
+    for nread in nfile.fetch(chrN,startPos,stopPos):
+        if(nread.is_duplicate): continue
+        if(n==0):
+            startloc = nread.pos
+        n+=1
+        if(n==winsize):
+            j=0
+            while((tread.pos<nread.pos) & (tread.rname==nread.rname)):
+                try:
+                    tread=tfileiterator.next()
+                    # last tumor read is at position < nread.pos
+                    # in this situation, the StopIteration is hit.  
+                except StopIteration:
+                    break
+                if(tread.is_duplicate): continue
+                j+=1
+            if(j!=0):
+                results.append([chrN,startloc,nread.pos,winsize,j,math.log(float(j)/winsize,2)])
+            n=0
+    tfile.close()
+    nfile.close()
+    return(results)
+
 def doNormalComparisonCGH(opts,logger):
     results=[]
     logger.info('Starting run')
@@ -48,36 +94,11 @@ def doNormalComparisonCGH(opts,logger):
     outfile=sys.stdout
     if(opts.outfile is not None):
         outfile=open(opts.outfile,'w')
-    for chrN in regions.iterkeys():
-        logger.info('Chromosome %s' % chrN)
-        for (startPos, stopPos) in regions[chrN]:
-            logger.debug('  %s:%d-%d' % (chrN,startPos,stopPos))
-            n=0
-            tfileiterator=tfile.fetch(chrN,startPos,stopPos)
-            try:
-                tread=tfileiterator.next()
-            except StopIteration:
-                # No reads in the tumor in this region
-                break
-            for nread in nfile.fetch(chrN,startPos,stopPos):
-                if(nread.is_duplicate): continue
-                if(n==0):
-                    startloc = nread.pos
-                n+=1
-                if(n==winsize):
-                    j=0
-                    while((tread.pos<nread.pos) & (tread.rname==nread.rname)):
-                        try:
-                            tread=tfileiterator.next()
-                        # last tumor read is at position < nread.pos
-                        # in this situation, the StopIteration is hit.  
-                        except StopIteration:
-                            break
-                        if(tread.is_duplicate): continue
-                        j+=1
-                    if(j!=0):
-                        results.append([chrN,startloc,nread.pos,winsize,j,math.log(float(j)/winsize,2)])
-                    n=0
+    regionlist = [(opts,(chrN,locs[0][0],locs[0][1])) for chrN,locs in regions.items()]
+    pool = multiprocessing.Pool(processes=opts.processes)
+    logger.info('here')
+    tmpresults = pool.map_async(calculateRegion, regionlist).get(99999999)
+    results = list(itertools.chain(*tmpresults))
     # median-center data
     med = median([row[5] for row in results])
     logger.info('Writing output')
@@ -85,6 +106,7 @@ def doNormalComparisonCGH(opts,logger):
         row[5]=row[5]-med
         # and write the file....
         outfile.write("%s\t%d\t%d\t%d\t%d\t%f\n" % tuple(row))
+    outfile.close()
 
 def median(vect):
     vect.sort()
@@ -110,12 +132,14 @@ def main():
                         help='The name of the tumor sample bamfile')
     parser.add_argument('-r','--regions',dest='regions',
                         help='regions to which analysis should be restricted, either a bed file name or a single region in format chrN:XXX-YYY')
-    opts = parser.parse_args() 
-    logging.basicConfig()
-    logger = logging.getLogger('ngCGH')
-    logger.setLevel(opts.loglevel)
+    parser.add_argument('-t','--threads',dest='processes',default=1,type=int,
+                        help='parallelize over regions (or chromosomes)')
+
+    opts = parser.parse_args()
+    logger = multiprocessing.log_to_stderr(opts.loglevel)
     if(opts.normalbam is not None):
         doNormalComparisonCGH(opts,logger)
         exit()
-    
-main()
+
+if __name__=='__main__':
+    main()

@@ -41,28 +41,31 @@ Usage is very simple:
 
 ::
 
-    $ ngCGH -h
     usage: ngCGH [-h] [-w WINDOWSIZE] [-o OUTFILE] [-l LOGLEVEL] [-r REGIONS]
-               normalbam tumorbam
+		 [-t PROCESSES]
+		 normalbam tumorbam
 
     positional arguments:
       normalbam             The name of the bamfile for the normal comparison
       tumorbam              The name of the tumor sample bamfile
 
     optional arguments:
-    -h, --help            show this help message and exit
-    -w WINDOWSIZE, --windowsize WINDOWSIZE
-                        The number of reads captured from the normal sample
-                        for calculation of copy number
-    -o OUTFILE, --outfile OUTFILE
-                        Output filename, default <stdout>
-    -l LOGLEVEL, --loglevel LOGLEVEL
-                        Logging Level, 1-15 with 1 being minimal logging and
-                        15 being everything [10]
-    -r REGIONS, --regions REGIONS
-                        regions to which analysis should be restricted, either
-                        a bed file name or a single region in format chrN:XXX-
-                        YYY
+      -h, --help            show this help message and exit
+      -w WINDOWSIZE, --windowsize WINDOWSIZE
+			    The number of reads captured from the normal sample
+			    for calculation of copy number (default: 1000)
+      -o OUTFILE, --outfile OUTFILE
+			    Output filename, default <stdout> (default: None)
+      -l LOGLEVEL, --loglevel LOGLEVEL
+			    Logging Level, 1-30 with 1 being maximal logging and
+			    30 being errors only [20] (default: 20)
+      -r REGIONS, --regions REGIONS
+			    regions to which analysis should be restricted, either
+			    a bed file name or a single region in format chrN:XXX-
+			    YYY (default: None)
+      -t PROCESSES, --threads PROCESSES
+			    parallelize over regions (or chromosomes) (default: 1)
+
 
 Output
 ======
