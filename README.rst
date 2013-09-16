@@ -82,7 +82,7 @@ The output format is also very simple:
 Columns 1-3 describe the chromosome, start, and end for each pseudo-probe.  The fourth column is the number of reads in the normal sample in the window while the fifth column represents the reads *in the same genomic window* from the tumor.  The last column contains the median-centered log2 ratio between tumor and normal.
 
 
-Convert from ngCGH to Biodiscovery Nexus
+Convert from ngCGH to `BioDiscovery Nexus <http://www.biodiscovery.com/software/nexus-copy-number/>`_
 ----------------------------------------
 Included in the release is a script, convert2nexus, that takes as input the filename of a file created by ngCGH and converts it into a file that the Nexus CGH software from BioDiscovery can load for further analysis.  The format looks like this:
 
@@ -96,11 +96,11 @@ Included in the release is a script, convert2nexus, that takes as input the file
   chr1_726959     chr1    726959  808542  0.223047
   chr1_808546     chr1    808546  809138  -1.186761
 
+I presented a webinar on using ngCGH with `BioDiscovery Nexus <http://www.biodiscovery.com/software/nexus-copy-number/>` that you can `view here <http://www.biodiscovery.com/2012/05/16/copy-number-estimation-from-exome-and-genome-sequencing-data/>`_.
 
-Convert from Complete Genomics to Biodiscovery Nexus
+Convert from Complete Genomics to `BioDiscovery Nexus <http://www.biodiscovery.com/software/nexus-copy-number/>`_
 ----------------------------------------------------
 There is now plenty of Complete Genomics data floating around.  We are often interested in visualizing the somatic CNV data in Biodiscovery nexus.  There is a script, cgi2nexus that takes a file typically named as "SomaticCnvDetailsDiploidBeta*" and converts to the file format noted above.  Bzip2 (typical from CGI) are uncompressed on-the-fly.
-
 
 Segmenting output
 -------------------------
