@@ -41,28 +41,31 @@ Usage is very simple:
 
 ::
 
-    $ ngCGH -h
     usage: ngCGH [-h] [-w WINDOWSIZE] [-o OUTFILE] [-l LOGLEVEL] [-r REGIONS]
-               normalbam tumorbam
+		 [-t PROCESSES]
+		 normalbam tumorbam
 
     positional arguments:
       normalbam             The name of the bamfile for the normal comparison
       tumorbam              The name of the tumor sample bamfile
 
     optional arguments:
-    -h, --help            show this help message and exit
-    -w WINDOWSIZE, --windowsize WINDOWSIZE
-                        The number of reads captured from the normal sample
-                        for calculation of copy number
-    -o OUTFILE, --outfile OUTFILE
-                        Output filename, default <stdout>
-    -l LOGLEVEL, --loglevel LOGLEVEL
-                        Logging Level, 1-15 with 1 being minimal logging and
-                        15 being everything [10]
-    -r REGIONS, --regions REGIONS
-                        regions to which analysis should be restricted, either
-                        a bed file name or a single region in format chrN:XXX-
-                        YYY
+      -h, --help            show this help message and exit
+      -w WINDOWSIZE, --windowsize WINDOWSIZE
+			    The number of reads captured from the normal sample
+			    for calculation of copy number (default: 1000)
+      -o OUTFILE, --outfile OUTFILE
+			    Output filename, default <stdout> (default: None)
+      -l LOGLEVEL, --loglevel LOGLEVEL
+			    Logging Level, 1-30 with 1 being maximal logging and
+			    30 being errors only [20] (default: 20)
+      -r REGIONS, --regions REGIONS
+			    regions to which analysis should be restricted, either
+			    a bed file name or a single region in format chrN:XXX-
+			    YYY (default: None)
+      -t PROCESSES, --threads PROCESSES
+			    parallelize over regions (or chromosomes) (default: 1)
+
 
 Output
 ======
@@ -97,6 +100,11 @@ Included in the release is a script, convert2nexus, that takes as input the file
   chr1_808546     chr1    808546  809138  -1.186761
 
 I presented a webinar on using ngCGH with `BioDiscovery Nexus <http://www.biodiscovery.com/software/nexus-copy-number/>` that you can `view here <http://www.biodiscovery.com/2012/05/16/copy-number-estimation-from-exome-and-genome-sequencing-data/>`_.
+
+.. note::
+
+   The file format generated above can be loaded into Biodiscovery Nexus using the "Multi1" data type.
+
 
 Convert from Complete Genomics to `BioDiscovery Nexus <http://www.biodiscovery.com/software/nexus-copy-number/>`_
 ----------------------------------------------------
