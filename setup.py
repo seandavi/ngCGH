@@ -138,7 +138,7 @@ The pseudo-cgh algorithm employed by ngCGH takes as input two appropriately matc
 """,
       classifiers=["Topic :: Scientific/Engineering :: Bio-Informatics"], # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
       keywords='',
-      author='Sean Davis and Josh Waterfall',
+      author='Sean Davis',
       author_email='sdavis2@mail.nih.gov',
       url='http://github.com/seandavi/ngCGH',
       license='GPL-2',
