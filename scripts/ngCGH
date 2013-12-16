@@ -140,16 +140,12 @@ def main():
                         help='parallelize over regions (or chromosomes)')
 
     opts = parser.parse_args()
-<<<<<<< HEAD
     if(opts.filter is not '0'):
         opts.filter = int(opts.filter,0)
     if(opts.required is not '0'):
         opts.required = int(opts.required,0)
     if(opts.loglevel is not None):
         logger.setLevel(opts.loglevel)
-=======
-    logger = multiprocessing.log_to_stderr(opts.loglevel)
->>>>>>> a38199b0bb263a95a6c1016fbb758477ef47f924
     if(opts.normalbam is not None):
         doNormalComparisonCGH(opts,logger)
         exit()
