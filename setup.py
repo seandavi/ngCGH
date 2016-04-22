@@ -23,6 +23,7 @@ setup(name='ngCGH',
       ],
       scripts = ['scripts/ngCGH',
                  'scripts/convert2nexus',
+                 'scripts/cgi2nexus',
                  'scripts/cgh2seg'],
       entry_points="""
       # -*- Entry points: -*-
